@@ -2,11 +2,12 @@ const express = require("express");
 require("dotenv").config();
 const mongoose = require("mongoose");
 //import routes
+const authRoutes=require('./routes/auth')
 const userRoutes=require('./routes/user')
 const morgan = require('morgan');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const { use } = require("./routes/user");
+const { use } = require("./routes/auth");
 const expressValidator = require("express-validator");
 
 //app
@@ -30,7 +31,8 @@ app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(expressValidator()); // v 5.3.1 express-validator is only stable
-//routes niddleware, prepended with /api
+//routes middleware, prepended with /api
+app.use('/api',authRoutes);
 app.use('/api',userRoutes);
 
 
