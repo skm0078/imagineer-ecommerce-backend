@@ -1,14 +1,37 @@
-const User = require('../models/user');
+const User = require("../models/user");
 
+exports.userById = (req, res, next, id) => {
+  User.findById(id).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User not Found",
+      });
+    }
+    req.profile = user;
+    next();
+  });
+};
 
-exports.userById=(req,res,next,id)=>{
-    User.findById(id).exec((err,user)=>{
-        if(err || !user){
+exports.read = (req, res) => {
+  req.profile.hashed_password = undefined;
+  req.profile.salt = undefined;
+  return res.json(req.profile);
+};
+
+exports.update = (req, res) => {
+  User.findByIdAndUpdate(
+    { _id: req.profile._id },
+    { $set: req.body },
+    { new: true },
+    (err,user)=>{
+        if(err){
             return res.status(400).json({
-                error: 'User not Found'
+                error: 'You are not authorized to perform this action'
             })
         }
-        req.profile = user;
-        next();
-    })
-}
+        user.hashed_password = undefined;
+        user.salt = undefined;
+        res.json(user);
+    }
+  );
+};

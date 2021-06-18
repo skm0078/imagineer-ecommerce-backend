@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const morgan = require('morgan');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const cors = require('cors');
 const { use } = require("./routes/auth");
 const expressValidator = require("express-validator");
 
@@ -34,6 +35,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressValidator()); // v 5.3.1 express-validator is only stable
 //routes middleware, prepended with /api
+app.use(cors());
 app.use('/api',authRoutes);
 app.use('/api',userRoutes);
 app.use("/api",categoryRoutes);
